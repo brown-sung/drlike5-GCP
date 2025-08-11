@@ -15,7 +15,7 @@ const setFirestoreData = async (userKey, data) => await firestore.collection('co
 const deleteFirestoreData = async (userKey) => await firestore.collection('conversations').doc(userKey).delete();
 
 // --- Gemini API 서비스 ---
-async function callGemini(systemPrompt, context, model = 'gemini-1.5-flash', isJson = false) {
+async function callGemini(systemPrompt, context, model = 'gemini-2.0-flash-lite', isJson = false) {
     const auth = new GoogleAuth({ scopes: 'https://www.googleapis.com/auth/cloud-platform' });
     const client = await auth.getClient();
     const accessToken = (await client.getAccessToken()).token;
@@ -62,12 +62,12 @@ async function callGemini(systemPrompt, context, model = 'gemini-1.5-flash', isJ
 // 다음 질문 생성 (JSON 데이터도 함께 전달)
 const generateNextQuestion = async (history, extracted_data) => {
     const context = `---대화 기록 시작---\n${history.join('\n')}\n---대화 기록 끝---\n\n[현재까지 분석된 환자 정보]\n${JSON.stringify(extracted_data, null, 2)}`;
-    return await callGemini(SYSTEM_PROMPT_GENERATE_QUESTION, context, 'gemini-1.5-flash');
+    return await callGemini(SYSTEM_PROMPT_GENERATE_QUESTION, context, 'gemini-2.0-flash-lite');
 };
 
 // 종합 분석 함수 (한 번에 모든 정보 추출)
 const analyzeConversation = async (history) => {
-    const result = await callGemini(SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE, history.join('\n'), 'gemini-1.5-pro', true);
+    const result = await callGemini(SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE, history.join('\n'), 'gemini-2.0-flash-lite', true);
     return JSON.parse(result);
 };
 
