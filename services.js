@@ -11,7 +11,7 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 
 // --- Firestore 서비스 ---
 const getFirestoreData = async (userKey) => (await firestore.collection('conversations').doc(userKey).get()).data();
-const setFirestoreData = async (userKey, data) => await firestore.collection('conversations').doc(userKey).set(data, { merge: true }); // merge 옵션으로 부분 업데이트 지원
+const setFirestoreData = async (userKey, data) => await firestore.collection('conversations').doc(userKey).set(data, { merge: true });
 const deleteFirestoreData = async (userKey) => await firestore.collection('conversations').doc(userKey).delete();
 
 // --- Gemini API 서비스 ---
