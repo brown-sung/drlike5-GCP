@@ -1,4 +1,4 @@
-// 파일: index.js
+// 파일: index.js - re
 const express = require('express');
 const { getFirestoreData } = require('./services');
 const stateHandlers = require('./handlers');
