@@ -20,7 +20,10 @@ async function callGemini(systemPrompt, context, model = 'gemini-1.5-flash', isJ
     const client = await auth.getClient();
     const accessToken = (await client.getAccessToken()).token;
 
+       // ★★★★★ 디버깅을 위한 코드 추가 ★★★★★
     const url = `https://asia-northeast3-aiplatform.googleapis.com/v1/projects/${process.env.GCP_PROJECT}/locations/asia-northeast3/publishers/google/models/${model}:streamGenerateContent`;
+    console.log("Constructed API URL:", url); // 실제로 호출되는 URL을 로그에 출력
+    // ★★★★★ 여기까지 추가 ★★★★★
 
     const contents = [{ role: 'user', parts: [{ text: systemPrompt }] }];
     if (context) {
