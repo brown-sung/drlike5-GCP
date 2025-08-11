@@ -1,19 +1,37 @@
-{
-  "name": "asthma-bot-gcp-final",
-  "version": "1.0.0",
-  "description": "Multi-turn pediatric asthma consultation bot on GCP",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@google-cloud/bigquery": "^7.8.0",
-    "@google-cloud/firestore": "^7.8.0",
-    "express": "^4.19.2",
-    "google-auth-library": "^9.11.0",
-    "node-fetch": "^3.3.2"
-  }
-}
+// 파일: prompts.js
+const TERMINATION_PHRASES = ["종료", "그만", "끝", "됐어", "이제 괜찮아", "아니요, 종료할게요"];
+const AFFIRMATIVE_PHRASES = ["네", "응", "맞아", "좋아", "해주세요", "분석", "예", "추가할 내용이 있어요"];
+
+// 수집할 모든 항목 리스트 (BigQuery 스키마와 일치)
+const ALL_SYMPTOM_FIELDS = [
+    "복용중 약", "기존 진단명", "과거 병력", "증상 완화 여부", "증상 지속", "기침", "발열", 
+    "콧물", "맑은 콧물", "코막힘", "코 가려움", "결막염", "두통", "인후통", "쌕쌕거림", 
+    "호흡곤란", "가슴 답답", "야간", "기관지확장제 사용", "가족력", "천식 병력", 
+    "알레르기 비염 병력", "모세기관지염 병력", "아토피 병력", "공중 항원", "식품 항원", 
+    "운동시 이상", "계절", "기온", "가래", "재채기", "후비루"
+];
+
+// 통합 분석 프롬프트 (가장 중요)
+const SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE = `
+당신은 환자와의 대화록을 분석하여, 주어진 모든 항목에 대한 정보를 추출하는 고도로 정확한 의료 정보 분석 AI입니다. 대화 전체의 맥락을 완벽하게 파악하여, 아래 규칙에 따라 모든 필드를 포함하는 단 하나의 JSON 객체를 생성해야 합니다.
+
+[추출 규칙]
+1.  대화에서 긍정적으로 확인된 정보는 "Y"로 표기하세요.
+2.  대화에서 명시적으로 부인된 정보는 "N"으로 표기하세요.
+3.  기간, 종류, 이름 등 구체적인 텍스트 정보가 있다면 해당 텍스트를 그대로 값으로 넣으세요. (예: "3주", "벤토린 복용중")
+4.  대화에서 전혀 언급되지 않은 항목의 값은 반드시 'null' 이어야 합니다.
+5.  다른 설명 없이, 오직 유효한 JSON 객체 형식으로만 응답해야 합니다.
+
+[추출 대상 필드 목록 - 이 모든 필드를 JSON에 포함하세요]
+${ALL_SYMPTOM_FIELDS.join(', ')}
+`;
+
+const SYSTEM_PROMPT_GENERATE_QUESTION = `당신은 소아 환자의 상태를 파악하려는 친절하고 상냥한 AI 의사입니다. 주어진 대화 기록과 환자의 현재 상태(JSON 데이터)를 바탕으로, 아직 확인되지 않은('null' 값인 필드) 가장 중요한 질문을 '하나만' 자연스러운 대화체로 물어보세요. 사용자의 마지막 말에 가볍게 공감하며 질문을 시작하세요. 질문은 간결해야 합니다.`;
+
+module.exports = {
+    TERMINATION_PHRASES,
+    AFFIRMATIVE_PHRASES,
+    ALL_SYMPTOM_FIELDS,
+    SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE,
+    SYSTEM_PROMPT_GENERATE_QUESTION,
+};
