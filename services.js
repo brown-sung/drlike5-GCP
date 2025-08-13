@@ -2,17 +2,17 @@
 const { Firestore } = require('@google-cloud/firestore');
 const { BigQuery } = require('@google-cloud/bigquery');
 const { VertexAI } = require('@google-cloud/vertexai');
-const { CloudTasksClient } = require('@google-cloud/tasks');
+const { CloudTasksClient } = require('@google-cloud/tasks'); // ★ Cloud Tasks 임포트
 const { 
     SYSTEM_PROMPT_GENERATE_QUESTION, 
     SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE,
-    SYSTEM_PROMPT_WAIT_MESSAGE
+    SYSTEM_PROMPT_WAIT_MESSAGE // ★ 대기 메시지 프롬프트 임포트
 } = require('./prompts');
 
 // --- 클라이언트 초기화 ---
 const firestore = new Firestore();
 const bigquery = new BigQuery();
-const tasksClient = new CloudTasksClient();
+const tasksClient = new CloudTasksClient(); // ★ Tasks 클라이언트 초기화
 const vertex_ai = new VertexAI({
     project: process.env.GCP_PROJECT,
     location: 'asia-northeast3',
@@ -54,7 +54,7 @@ async function callGeminiWithSDK(systemPrompt, context, modelName = 'gemini-1.5-
     }
 }
 
-// 대기 메시지 생성 (짧은 타임아웃)
+// ★ 대기 메시지 생성 함수 (신규, 짧은 타임아웃 적용)
 async function generateWaitMessage(history) {
     const context = `---대화 기록---\n${history.join('\n')}`;
     try {
@@ -72,14 +72,14 @@ const generateNextQuestion = async (history, extracted_data) => {
     return await callGeminiWithSDK(SYSTEM_PROMPT_GENERATE_QUESTION, context, 'gemini-1.5-flash');
 };
 
-// 종합 분석 함수 (긴 타임아웃)
+// 종합 분석 함수
 const analyzeConversation = async (history) => {
     const context = `다음은 분석할 대화록입니다:\n\n${history.join('\n')}`;
-    const resultText = await callGeminiWithSDK(SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE, context, 'gemini-1.5-flash', true);
+    const resultText = await callGeminiWithSDK(SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE, context, 'gemini-1.5-pro', true);
     return JSON.parse(resultText);
 };
 
-// --- Cloud Tasks 서비스 ---
+// --- Cloud Tasks 서비스 (신규) ---
 async function createAnalysisTask(payload) {
     const { GCP_PROJECT, GCP_LOCATION, TASK_QUEUE_NAME, CLOUD_RUN_URL } = process.env;
     const queuePath = tasksClient.queuePath(GCP_PROJECT, GCP_LOCATION, TASK_QUEUE_NAME);

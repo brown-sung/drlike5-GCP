@@ -49,4 +49,8 @@ module.exports = {
     SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE,
     SYSTEM_PROMPT_GENERATE_QUESTION,
     SYSTEM_PROMPT_WAIT_MESSAGE,
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> f18c06aaf7d0d2582c542a38aef05c1ecbef89f3
