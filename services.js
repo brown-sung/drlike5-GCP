@@ -69,7 +69,7 @@ async function generateWaitMessage(history) {
 // 다음 질문 생성
 const generateNextQuestion = async (history, extracted_data) => {
     const context = `---대화 기록 시작---\n${history.join('\n')}\n---대화 기록 끝---\n\n[현재까지 분석된 환자 정보]\n${JSON.stringify(extracted_data, null, 2)}`;
-    return await callGeminiWithSDK(SYSTEM_PROMPT_GENERATE_QUESTION, context, 'gemini-2.5-flash-lite');
+    return await callGeminiWithSDK(SYSTEM_PROMPT_GENERATE_QUESTION, context, 'gemini-2.0-flash-lite');
 };
 
 // 종합 분석 함수 (긴 타임아웃)
