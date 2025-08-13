@@ -24,7 +24,7 @@ const setFirestoreData = async (userKey, data) => await firestore.collection('co
 const deleteFirestoreData = async (userKey) => await firestore.collection('conversations').doc(userKey).delete();
 
 // --- Gemini API 서비스 ---
-async function callGeminiWithSDK(systemPrompt, context, modelName = 'gemini-2.5-flash-lite', isJson = false, timeout = 25000) {
+async function callGeminiWithSDK(systemPrompt, context, modelName = 'gemini-2.0-flash-lite', isJson = false, timeout = 25000) {
     const model = vertex_ai.getGenerativeModel({
         model: modelName,
         systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -58,7 +58,7 @@ async function callGeminiWithSDK(systemPrompt, context, modelName = 'gemini-2.5-
 async function generateWaitMessage(history) {
     const context = `---대화 기록---\n${history.join('\n')}`;
     try {
-        const resultText = await callGeminiWithSDK(SYSTEM_PROMPT_WAIT_MESSAGE, context, 'gemini-2.5-flash-lite', true, 3800);
+        const resultText = await callGeminiWithSDK(SYSTEM_PROMPT_WAIT_MESSAGE, context, 'gemini-2.0-flash-lite', true, 3800);
         return JSON.parse(resultText).wait_text;
     } catch (error) {
         console.warn("Wait message generation failed. Using default.", error.message);
@@ -75,7 +75,7 @@ const generateNextQuestion = async (history, extracted_data) => {
 // 종합 분석 함수 (긴 타임아웃)
 const analyzeConversation = async (history) => {
     const context = `다음은 분석할 대화록입니다:\n\n${history.join('\n')}`;
-    const resultText = await callGeminiWithSDK(SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE, context, 'gemini-2.5-flash-lite', true);
+    const resultText = await callGeminiWithSDK(SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE, context, 'gemini-2.0-flash-lite', true);
     return JSON.parse(resultText);
 };
 
