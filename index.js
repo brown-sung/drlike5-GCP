@@ -1,6 +1,6 @@
 // 파일: index.js
 const express = require('express');
-const { getFirestoreData } = require('./services');
+const { getFirestoreData, getServiceAccountEmail } = require('./services'); // getServiceAccountEmail 임포트
 const stateHandlers = require('./handlers');
 const { createResponseFormat } = require('./utils');
 
@@ -11,6 +11,15 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.status(200).send("Asthma Consultation Bot is running!");
 });
+
+// ★★★★★ 진단용 엔드포인트 추가 ★★★★★
+app.get('/test-auth', async (req, res) => {
+    const serviceAccount = await getServiceAccountEmail();
+    console.log(`[/test-auth] Running with Service Account: ${serviceAccount}`);
+    res.status(200).send(`Currently running with Service Account: ${serviceAccount}`);
+});
+// ★★★★★ 여기까지 추가 ★★★★★
+
 
 // 카카오 스킬 요청을 처리하는 단일 엔드포인트
 app.post('/skill', async (req, res) => {
