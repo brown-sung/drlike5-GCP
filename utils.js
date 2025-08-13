@@ -1,7 +1,6 @@
 // 파일: utils.js
-
 const createResponseFormat = (mainText, questions = []) => {
-  const safeQuestions = Array.isArray(questions) ? questions.slice(0, 10) : []; // 카카오톡 최대 10개
+  const safeQuestions = Array.isArray(questions) ? questions.slice(0, 10) : [];
   const response = {
     version: "2.0",
     template: {
@@ -22,11 +21,12 @@ const createResponseFormat = (mainText, questions = []) => {
   return response;
 };
 
-// 사용하지 않지만, 참고용으로 남겨둠
 const createCallbackWaitResponse = (text) => ({
     version: "2.0",
     useCallback: true,
-    data: { text: text }
+    data: {
+        text: text
+    }
 });
 
 module.exports = {
