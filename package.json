@@ -1,7 +1,7 @@
 {
-  "name": "asthma-bot-gcp-sdk-callback",
+  "name": "asthma-bot-gcp-apikey-final",
   "version": "1.0.0",
-  "description": "Multi-turn asthma bot with Kakao callback support",
+  "description": "Multi-turn asthma bot using Gemini API Key",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -13,7 +13,7 @@
     "@google-cloud/bigquery": "^7.8.0",
     "@google-cloud/firestore": "^7.8.0",
     "@google-cloud/tasks": "^5.3.0",
-    "@google-cloud/vertexai": "^1.3.0",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
   }
 }
