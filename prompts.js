@@ -1,13 +1,49 @@
 // 파일: prompts.js
-const TERMINATION_PHRASES = ["종료", "그만", "끝", "됐어", "이제 괜찮아", "아니요, 종료할게요"];
-const AFFIRMATIVE_PHRASES = ["네", "응", "맞아", "좋아", "해주세요", "분석", "예", "추가할 내용이 있어요"];
+const TERMINATION_PHRASES = ['종료', '그만', '끝', '됐어', '이제 괜찮아', '아니요, 종료할게요'];
+const AFFIRMATIVE_PHRASES = [
+  '네',
+  '응',
+  '맞아',
+  '좋아',
+  '해주세요',
+  '분석',
+  '예',
+  '추가할 내용이 있어요',
+];
 
 const ALL_SYMPTOM_FIELDS = [
-    "복용중 약", "기존 진단명", "과거 병력", "증상 완화 여부", "증상 지속", "기침", "발열", 
-    "콧물", "맑은 콧물", "코막힘", "코 가려움", "결막염", "두통", "인후통", "쌕쌕거림", 
-    "호흡곤란", "가슴 답답", "야간", "기관지확장제 사용", "가족력", "천식 병력", 
-    "알레르기 비염 병력", "모세기관지염 병력", "아토피 병력", "공중 항원", "식품 항원", 
-    "운동시 이상", "계절", "기온", "가래", "재채기", "후비루"
+  '복용중 약',
+  '기존 진단명',
+  '과거 병력',
+  '증상 완화 여부',
+  '증상 지속',
+  '기침',
+  '발열',
+  '콧물',
+  '맑은 콧물',
+  '코막힘',
+  '코 가려움',
+  '결막염',
+  '두통',
+  '인후통',
+  '쌕쌕거림',
+  '호흡곤란',
+  '가슴 답답',
+  '야간',
+  '기관지확장제 사용',
+  '가족력',
+  '천식 병력',
+  '알레르기 비염 병력',
+  '모세기관지염 병력',
+  '아토피 병력',
+  '공중 항원',
+  '식품 항원',
+  '운동시 이상',
+  '계절',
+  '기온',
+  '가래',
+  '재채기',
+  '후비루',
 ];
 
 const SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE = `
@@ -43,14 +79,10 @@ You are an assistant that creates a short, reassuring waiting message based on t
 `;
 
 module.exports = {
-    TERMINATION_PHRASES,
-    AFFIRMATIVE_PHRASES,
-    ALL_SYMPTOM_FIELDS,
-    SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE,
-    SYSTEM_PROMPT_GENERATE_QUESTION,
-    SYSTEM_PROMPT_WAIT_MESSAGE,
-<<<<<<< HEAD
+  TERMINATION_PHRASES,
+  AFFIRMATIVE_PHRASES,
+  ALL_SYMPTOM_FIELDS,
+  SYSTEM_PROMPT_ANALYZE_COMPREHENSIVE,
+  SYSTEM_PROMPT_GENERATE_QUESTION,
+  SYSTEM_PROMPT_WAIT_MESSAGE,
 };
-=======
-};
->>>>>>> f18c06aaf7d0d2582c542a38aef05c1ecbef89f3
