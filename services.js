@@ -115,7 +115,7 @@ async function generateWaitMessage(history) {
     const resultText = await callGeminiWithApiKey(
       SYSTEM_PROMPT_WAIT_MESSAGE,
       context,
-      'gemini-2.5-flash',
+      'gemini-2.5-flash-lite',
       true,
       3800
     );
@@ -135,7 +135,11 @@ const generateNextQuestion = async (history, extracted_data) => {
     null,
     2
   )}`;
-  return await callGeminiWithApiKey(SYSTEM_PROMPT_GENERATE_QUESTION, context, 'gemini-2.5-flash');
+  return await callGeminiWithApiKey(
+    SYSTEM_PROMPT_GENERATE_QUESTION,
+    context,
+    'gemini-2.5-flash-lite'
+  );
 };
 
 // 종합 분석 함수 (API 키 방식)
