@@ -9,7 +9,7 @@ function judgeAsthma(data) {
     data['가슴 답답'] === 'Y' ||
     data.야간 === 'Y';
   const isFrequent =
-    data['증상 지속']?.includes('3개월') || data['기관지확장제 사용']?.includes('3_개월'); // API가 _를 넣는 경우가 있어 방어
+    data['증상 지속']?.includes('3개월') || data['기관지확장제 사용']?.includes('3_개월');
 
   if (data['증상 완화 여부'] === 'Y' || data.발열 === 'Y' || data.인후통 === 'Y') {
     return {
