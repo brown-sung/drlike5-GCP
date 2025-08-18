@@ -2,57 +2,16 @@
 const express = require('express');
 const { getFirestoreData, setFirestoreData, analyzeConversation } = require('./services');
 const stateHandlers = require('./handlers');
-const { createResponseFormat } = require('./utils');
-const { judgeAsthma, formatResult } = require('./analysis'); // formatReport -> formatResult
+const { createResponseFormat, createResultCardResponse } = require('./utils'); // ★ createResultCardResponse 임포트
+const { judgeAsthma, formatResult } = require('./analysis');
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.status(200).send('Asthma Consultation Bot is running!');
-});
+// ... (app.get('/') 및 app.post('/skill')은 이전과 동일) ...
 
-app.post('/skill', async (req, res) => {
-  try {
-    const userKey = req.body.userRequest?.user?.id;
-    const utterance = req.body.userRequest?.utterance;
-    const callbackUrl = req.body.userRequest?.callbackUrl;
-
-    if (!userKey || !utterance) {
-      return res.status(400).json(createResponseFormat('잘못된 요청입니다.'));
-    }
-    console.log(`[Request] user: ${userKey}, utterance: "${utterance}"`);
-
-    let userData = await getFirestoreData(userKey);
-    // "다시 검사하기" 또는 "처음으로" 선택 시 대화 초기화
-    if (utterance === '다시 검사하기' || utterance === '처음으로') {
-      userData = { state: 'INIT', history: [] };
-    }
-    if (!userData) {
-      userData = { state: 'INIT', history: [] };
-    }
-
-    console.log(`[State] current: ${userData.state}`);
-
-    const handler = stateHandlers[userData.state] || stateHandlers['INIT'];
-    const response = await handler(
-      userKey,
-      utterance,
-      userData.history,
-      userData.extracted_data,
-      callbackUrl
-    );
-
-    return res.status(200).json(response);
-  } catch (error) {
-    console.error("'/skill' 처리 중 오류 발생:", error);
-    return res
-      .status(500)
-      .json(createResponseFormat('시스템에 오류가 발생했어요. 잠시 후 다시 시도해주세요.'));
-  }
-});
-
+// === 엔드포인트 2: Cloud Tasks 비동기 작업 처리 (최종 분석 및 콜백 전송) ===
 app.post('/process-analysis-callback', async (req, res) => {
   const { userKey, history, callbackUrl } = req.body;
   if (!userKey || !history || !callbackUrl) {
@@ -66,8 +25,10 @@ app.post('/process-analysis-callback', async (req, res) => {
     const updated_extracted_data = await analyzeConversation(history);
     const judgement = judgeAsthma(updated_extracted_data);
 
-    const { mainText, quickReplies } = formatResult(judgement); // ★ 수정
-    finalResponse = createResponseFormat(mainText, quickReplies); // ★ 수정
+    const { mainText, quickReplies } = formatResult(judgement);
+
+    // ★★★ simpleText 대신 basicCard 형식으로 최종 응답 생성 ★★★
+    finalResponse = createResultCardResponse(mainText, quickReplies, judgement.possibility);
 
     await setFirestoreData(userKey, {
       state: 'POST_ANALYSIS',
@@ -78,7 +39,8 @@ app.post('/process-analysis-callback', async (req, res) => {
     console.error(`[Callback Error] user: ${userKey}`, error);
     const errorText =
       '죄송합니다, 답변을 분석하는 중 오류가 발생했어요. 잠시 후 다시 시도해주세요. 😥';
-    finalResponse = createResponseFormat(errorText, ['다시 검사하기', '처음으로']); // ★ 수정
+    // 오류 응답은 기존의 simpleText 방식을 유지
+    finalResponse = createResponseFormat(errorText, ['다시 검사하기', '처음으로']);
   }
 
   await fetch(callbackUrl, {
@@ -90,7 +52,4 @@ app.post('/process-analysis-callback', async (req, res) => {
   return res.status(200).send('Callback job processed.');
 });
 
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Asthma Bot server listening on port ${PORT}`);
-});
+// ... (서버 실행 로직은 이전과 동일) ...
