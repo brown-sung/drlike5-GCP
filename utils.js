@@ -1,8 +1,8 @@
 // 파일: utils.js
 const IMAGE_URL_HIGH_RISK =
-  'https://github.com/brown-sung/drlike5-GCP/blob/main/asthma_high.png?raw=true';
+  'https://github.com/brown-sung/drlike5-GCP/blob/main/asthma_high2.png?raw=true';
 const IMAGE_URL_LOW_RISK =
-  'https://github.com/brown-sung/drlike5-GCP/blob/main/asthma_high.png?raw=true';
+  'https://github.com/brown-sung/drlike5-GCP/blob/main/asthma_low2.png?raw=true';
 
 const createResponseFormat = (mainText, questions = []) => {
   const safeQuestions = Array.isArray(questions) ? questions.slice(0, 10) : [];
